@@ -1,11 +1,9 @@
 #Creating a data.frame
-data <- data.frame("time" = c(0,0,0,0,0,0,0,0,0,0), "index" = c(1:10), "value" = c(90,30,5,7,3,5,0,20,15,29))
+data <- data.frame("time" = c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0), "index" = c(1:35), "value" = c(90,10,0,3,1,56,32,3,54,98,34,53,24,17,84,38,76,9,38,76,10,38,64,39,87,34,25,55,34,22,13,57,1,2,3))
 
-size = 10
-data_array <- array(c(4,30,5,7,3,5,0,20,15,90))
+size = 35
+data_array <- array(c(90,10,0,3,1,56,32,3,54,98,34,53,24,17,84,38,76,9,38,76,10,38,64,39,87,34,25,55,34,22,13,57,1,2,3))
 time_passed = 1
-ctr = 1
-plot_list = list()
 
 for(i in 1:size){
   for(k in 1:size-1){
@@ -17,22 +15,19 @@ for(i in 1:size){
     for(l in 1:size){
       data <- rbind(data,list(time_passed,l,data_array[l]))
     }
-    df <- data[data$time == time_passed,]
-    #p = barplot(df$value)
-    p = ggplot(df,aes(x=index,value)) + geom_point(size=10)
-    plot_list[[ctr]] = p
-    ctr = ctr + 1
     time_passed = time_passed + 1
   }
   
 }
 
-for(i in 1:100){
-  Sys.sleep(0.09)
-  plot(plot_list[[i]],type = "h")
-}
+p_temp <-ggplot(data=data, aes(x=index, y=value, fill = index)) +
+  geom_bar(stat="identity")
 
+anim <- p_temp + gganimate::transition_states(time,transition_length = 1,state_length = 1)
 
+anim1 <- p_temp + gganimate::transition_time(time)
 
-
+movie3 <- animate(anim, renderer = ffmpeg_renderer(format = ".gif"))
+b <- animate(anim,renderer = gifski_renderer(),nframes = 2000,fps=40)
+anim_save("output.gif", b)
 
